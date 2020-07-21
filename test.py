@@ -38,7 +38,11 @@ def eval_genomes(env, genomes, config):
             score1 = min(score1, 98)
             score2 = min(score2, 98)
 
-            current_fitness = score1**2 + (score1 / max(score2, 1))**2
+            #current_fitness = score1**2 + (score1 / max(score2, 1))**2
+            current_fitness = (score1 - score2)**2
+            if score1 < score2:
+                current_fitness = -current_fitness
+            current_fitness += score1**2
 
             genome.fitness = current_fitness
 
@@ -59,6 +63,7 @@ p = neat.Population(config)
 # print statistics after each generation
 p.add_reporter(neat.StdOutReporter(True))
 p.add_reporter(neat.StatisticsReporter())
+p.add_reporter(neat.Checkpointer(5))
 
 winner = p.run(lambda genomes, config: eval_genomes(env, genomes, config))
 
