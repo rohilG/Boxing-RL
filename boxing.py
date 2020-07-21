@@ -26,13 +26,16 @@ def eval_genomes(genomes, config):
     image_width //= 16
     image_height //= 16
 
+    #TODO
+    print("genome: ", genome, type(genome))
+
     net = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
 
     current_max_fitness = 0
     current_fitness = 0
 
     frame = 0
-    counter = 0
+    # counter = 0
 
     # score_diff = 0
     # score_diff_max = -100
@@ -64,6 +67,9 @@ def eval_genomes(genomes, config):
       score1 = info['score1']
       score2 = info['score2']
 
+      minutes = info['minutes']
+      seconds = info['seconds']
+
       # currently using difference between scores
       # NOTE: might be better to use score in a given time? or something like - 1 point for landing a hit and -0.5 for getting hit
       # (a score of 0-10 is probably worse than 10-20)
@@ -79,21 +85,29 @@ def eval_genomes(genomes, config):
       #   counter += 1
 
 
-      score_fitness = ((score1 - score2 + 100)//2) + (100 * score1) // max(score2, 1)
 
       if last_score1 == score1 and last_score2 == score2:
         counter += 1
       else:
+        print(minutes,seconds)
+        score1 = min(score1, 98)
+        score2 = min(score2, 98)
+                
         last_score1 = score1
         last_score2 = score2
         counter = 0
 
+      score_fitness = ((score1 - score2 + 100)//2) + (100 * score1) // max(score2, 1)
+
       # stop training if score has not improved for 1000 frames
       # NOTE: maybe this value should be changed? or have some sort of other metric to decide when to stop game
-      if counter == 1000:
-        done = True
+      # if counter == 10000:
+      #   done = True
+
+      # if minutes == 0 and seconds == 0:
+      #   done = True
       
-      if score1 == 100 or score2 == 100:
+      if score1 => 98 or score2 >= 98:
         done = True
 
       if done:
