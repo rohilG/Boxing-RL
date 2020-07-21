@@ -62,7 +62,7 @@ def eval_genomes(genome, config):
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                     'config-feedforward')
+                     'config-feedforward-parallel')
 p = neat.Population(config)
 
 # print statistics after each generation
@@ -73,7 +73,7 @@ p.add_reporter(neat.Checkpointer(5))
 
 pe = neat.ParallelEvaluator(5, eval_genomes)
 
-winner = p.run(pe.evaluate, 10)
+winner = p.run(pe.evaluate, 30)
 
 visualize.draw_net(config, winner, True)
 visualize.plot_stats(stats, ylog=False, view=True)
@@ -81,3 +81,5 @@ visualize.plot_species(stats, view=True)
 
 with open('winner.pkl', 'wb') as output:
     pickle.dump(winner, output, 1)
+
+exit(0)
