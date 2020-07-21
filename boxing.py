@@ -23,8 +23,8 @@ def eval_genomes(genomes, config):
     # vicinity where the white and black blobs are located. 
     #
     # Don't forget to change num_inputs in config if you do this
-    image_width //= 8 #16
-    image_height //= 8 #16
+    image_width //= 16
+    image_height //= 16
 
     net = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
 
@@ -34,8 +34,12 @@ def eval_genomes(genomes, config):
     frame = 0
     counter = 0
 
-    score_diff = 0
-    score_diff_max = -100
+    # score_diff = 0
+    # score_diff_max = -100
+
+    score_fitness = 0
+    last_score1 = 0
+    last_score2 = 0
 
     done = False
 
@@ -65,17 +69,31 @@ def eval_genomes(genomes, config):
       # (a score of 0-10 is probably worse than 10-20)
       # also sometimes the player will score a bunch of points in quick succession before slowly losing their lead, might be 
       # able to take advantage of these short bursts of the score difference rising by dividing it over time and give higher fitness
-      score_diff = score1 - score2
+      
+      # score_diff = score1 - score2
 
-      if score_diff > score_diff_max:
-        counter = 0
-        score_diff_max = score_diff
-      else:
+      # if score_diff > score_diff_max:
+      #   counter = 0
+      #   score_diff_max = score_diff
+      # else:
+      #   counter += 1
+
+
+      score_fitness = ((score1 - score2 + 100)//2) + (100 * score1) // max(score2, 1)
+
+      if last_score1 == score1 and last_score2 == score2:
         counter += 1
+      else:
+        last_score1 = score1
+        last_score2 = score2
+        counter = 0
 
-      # stop training if score relative to opponent has not improved for 1000 frames
+      # stop training if score has not improved for 1000 frames
       # NOTE: maybe this value should be changed? or have some sort of other metric to decide when to stop game
       if counter == 1000:
+        done = True
+      
+      if score1 == 100 or score2 == 100:
         done = True
 
       if done:
@@ -87,10 +105,10 @@ def eval_genomes(genomes, config):
         # but I'm not sure how important this is, and whether NEAT is ok with floating numbers for fitness (though this can be fixed pretty easily)
         #
         # I just have a suspiction that this value could be pretty important (though I could be totally wrong)
-        current_fitness = score_diff + 100
+        # current_fitness = score_diff + 100
+        current_fitness = score_fitness
 
-        # Doing current_fitness - 100 just so that you can easily see if you're winning or not
-        print("Genome ID ", genome_id, "Fitness Achieved ", current_fitness - 100)
+        print("Genome ID ", genome_id, "Fitness Achieved ", score_fitness)
 
       genome.fitness = current_fitness
 
