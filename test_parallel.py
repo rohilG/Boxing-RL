@@ -1,3 +1,6 @@
+import os
+import sys
+
 import retro
 import numpy as np
 import cv2
@@ -5,6 +8,11 @@ import neat
 import pickle
 
 import visualize
+
+if len(sys.argv) != 2:
+    print("Give me a unique folder name")
+    print("WTF are you doing with your life.")
+    exit(1)
 
 class Worker(object):
     def __init__(self, genome, config):
@@ -69,17 +77,18 @@ p = neat.Population(config)
 p.add_reporter(neat.StdOutReporter(True))
 stats = neat.StatisticsReporter()
 p.add_reporter(stats)
-p.add_reporter(neat.Checkpointer(5))
+p.add_reporter(neat.Checkpointer(5, filename_prefix=sys.argv[1] + "/neat-checkpoint-"))
 
-pe = neat.ParallelEvaluator(5, eval_genomes)
+pe = neat.ParallelEvaluator(None, eval_genomes)
 
-winner = p.run(pe.evaluate, 30)
+for i in range(4):
+    winner = p.run(pe.evaluate, 5)
 
-visualize.draw_net(config, winner, True)
-visualize.plot_stats(stats, ylog=False, view=True)
-visualize.plot_species(stats, view=True)
+    visualize.draw_net(config, winner, view=False, filename=sys.argv[1] + "/checkpoint-" + str(i) + "/Digraph")
+    visualize.plot_stats(stats, ylog=False, view=False, filename=sys.argv[1] + "/checkpoint-" + str(i) + "/avg_fitness.svg")
+    visualize.plot_species(stats, view=False, filename=sys.argv[1] + "/checkpoint-" + str(i) + "/speciation.svg")
 
-with open('winner.pkl', 'wb') as output:
-    pickle.dump(winner, output, 1)
+    with open(sys.argv[1] + "/checkpoint-" + str(i) + '/winner.pkl', 'wb') as output:
+        pickle.dump(winner, output, 1)
 
 exit(0)
