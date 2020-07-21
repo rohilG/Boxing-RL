@@ -38,7 +38,7 @@ def eval_genomes(env, genomes, config):
             score1 = min(score1, 98)
             score2 = min(score2, 98)
 
-            current_fitness = score1**2 + (10 * score1 / max(score2, 1))**2
+            current_fitness = score1**2 + (score1 / max(score2, 1))**2
 
             genome.fitness = current_fitness
 
