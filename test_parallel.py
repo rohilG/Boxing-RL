@@ -4,6 +4,8 @@ import cv2
 import neat
 import pickle
 
+import visualize
+
 class Worker(object):
     def __init__(self, genome, config):
         self.genome = genome
@@ -65,12 +67,17 @@ p = neat.Population(config)
 
 # print statistics after each generation
 p.add_reporter(neat.StdOutReporter(True))
-p.add_reporter(neat.StatisticsReporter())
+stats = neat.StatisticsReporter()
+p.add_reporter(stats)
 p.add_reporter(neat.Checkpointer(5))
 
 pe = neat.ParallelEvaluator(5, eval_genomes)
 
-winner = p.run(pe.evaluate)
+winner = p.run(pe.evaluate, 10)
+
+visualize.draw_net(config, winner, True)
+visualize.plot_stats(stats, ylog=False, view=True)
+visualize.plot_species(stats, view=True)
 
 with open('winner.pkl', 'wb') as output:
     pickle.dump(winner, output, 1)
