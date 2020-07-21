@@ -20,10 +20,10 @@ class Worker(object):
         self.config = config
 
     def work(self):
-        self.env = retro.make('Boxing-Atari2600', 'Start.state')
-        observation = self.env.reset()
+        env = retro.make('Boxing-Atari2600', 'Start.state')
+        observation = env.reset()
 
-        image_width, image_height, image_color = self.env.observation_space.shape
+        image_width, image_height, image_color = env.observation_space.shape
 
         image_width //= 8
         image_height //= 8
@@ -44,7 +44,7 @@ class Worker(object):
 
             action = net.activate(imgarray)
 
-            observation, reward, done, info = self.env.step(action)
+            observation, reward, done, info = env.step(action)
 
             score1 = info['score1']
             score2 = info['score2']
@@ -59,6 +59,7 @@ class Worker(object):
 
             if score1 >= 98 or score2 >= 98:
                 done = True
+        env.close()
         return current_fitness
 
 
