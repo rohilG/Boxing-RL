@@ -30,6 +30,8 @@ class Worker(object):
 
         net = neat.nn.recurrent.RecurrentNetwork.create(self.genome, self.config)
 
+        score1 = 0
+        score2 = 0
         current_fitness = 0
 
         done = False
@@ -52,13 +54,29 @@ class Worker(object):
             score1 = min(score1, 98)
             score2 = min(score2, 98)
 
-            current_fitness = (score1 - score2)**2
-            if score1 < score2:
-                current_fitness = - current_fitness
+            current_fitness = score1 - score2
+
+            # cur_fitness_v1 = -(100 * score1 / 98)
+            # cur_fitness_v2 = 0
+            # 
+            # if score1 < score2:
+            #     cur_fitness_v2 = 100 * score1 / (score2 * 2)
+            # elif score1 > score2:
+            #     cur_fitness_v2 = 50 + (100 * ((score1 - score2)/(100 - score2)) / 2)
+            # else:
+            #     cur_fitness_v2 = 50
+            # 
+            # current_fitness = max(cur_fitness_v1, cur_fitness_v2)
+            
             self.genome.fitness = current_fitness
 
             if score1 >= 98 or score2 >= 98:
                 done = True
+        
+        if score1 > score2:
+            current_fitness += 100
+        self.genome.fitness = current_fitness
+
         env.close()
         return current_fitness
 
@@ -82,7 +100,7 @@ p.add_reporter(neat.Checkpointer(5, filename_prefix=sys.argv[1] + "/neat-checkpo
 
 pe = neat.ParallelEvaluator(None, eval_genomes)
 
-for i in range(4):
+for i in range(8):
     winner = p.run(pe.evaluate, 5)
 
     visualize.draw_net(config, winner, view=False, filename=sys.argv[1] + "/checkpoint-" + str(i) + "/Digraph")
