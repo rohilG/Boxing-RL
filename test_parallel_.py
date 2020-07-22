@@ -54,7 +54,9 @@ class Worker(object):
             score1 = min(score1, 98)
             score2 = min(score2, 98)
 
-            current_fitness = score1 - score2
+            current_fitness = (score1 - score2)**2
+            if score1 < score2:
+            	current_fitness = - current_fitness
 
             # cur_fitness_v1 = -(100 * score1 / 98)
             # cur_fitness_v2 = 0
@@ -73,8 +75,8 @@ class Worker(object):
             if score1 >= 98 or score2 >= 98:
                 done = True
         
-        if score1 > score2:
-            current_fitness += 100
+        # if score1 > score2:
+        #    current_fitness += 100
         self.genome.fitness = current_fitness
 
         env.close()
