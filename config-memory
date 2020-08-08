@@ -1,0 +1,97 @@
+[NEAT]
+fitness_criterion = max
+fitness_threshold = 198
+no_fitness_termination = False
+pop_size = 30
+reset_on_extinction = False
+
+#####
+
+[DefaultStagnation]
+species_fitness_func = mean
+max_stagnation = 10
+species_elitism = 0
+
+#####
+
+[DefaultReproduction]
+elitism = 3
+survival_threshold = 0.3
+min_species_size = 2
+
+#####
+
+[DefaultGenome]
+
+# node activation options
+activation_default = sigmoid
+activation_mutate_rate = 0.05
+activation_options = sigmoid gauss
+
+# node aggregation options
+aggregation_default = random
+aggregation_mutate_rate = 0.05
+aggregation_options = sum product min max mean median maxabs
+
+# node bias options
+bias_init_mean = 0.05
+bias_init_stdev = 1.0
+bias_max_value = 30.0
+bias_min_value = -30.0
+bias_mutate_power = 0.5
+bias_mutate_rate = 0.7
+bias_replace_rate = 0.1
+
+# genome compatibility options
+compatibility_disjoint_coefficient = 1.0
+compatibility_weight_coefficient = 0.5
+
+# connection add/remove rates
+conn_add_prob = 0.5
+conn_delete_prob = 0.5
+
+# connection enable options
+enabled_default = True
+enabled_mutate_rate = 0.5
+
+# This allows for memory
+feed_forward = False
+
+# Initial state
+initial_connection = partial_nodirect 0.5
+# initial_connection = full_direct
+# initial_connection = unconnected
+
+# node add/remove rates
+node_add_prob           = 0.75
+node_delete_prob        = 0.1
+
+# Number of inputs and outputs
+num_inputs = ?
+num_outputs = ?
+
+# Initial hidden nodes
+num_hidden = 10
+
+# node response options
+response_init_mean = 1.0
+response_init_stdev = 0.05
+response_max_value = 30.0
+response_min_value = -30.0
+response_mutate_power = 0.1
+response_mutate_rate = 0.75
+response_replace_rate = 0.1
+
+# connection weight options
+weight_init_mean = 0.1
+weight_init_stdev = 1.0
+weight_max_value = 30
+weight_min_value = -30
+weight_mutate_power = 0.5
+weight_mutate_rate = 0.8
+weight_replace_rate = 0.1
+
+#####
+
+[DefaultSpeciesSet]
+compatibility_threshold = 2.5
