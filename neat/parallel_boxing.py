@@ -24,8 +24,8 @@ if os.system("mkdir " + save_file):
     print("WTF are you doing with your life.")
     exit(1)
 
-class Worker(object):
 
+class Worker(object):
     def __init__(self, genome, config):
         self.genome = genome
         self.config = config
@@ -39,7 +39,8 @@ class Worker(object):
         image_width //= 8
         image_height //= 8
 
-        net = neat.nn.recurrent.RecurrentNetwork.create(self.genome, self.config)
+        net = neat.nn.recurrent.RecurrentNetwork.create(
+            self.genome, self.config)
 
         score1 = 0
         score2 = 0
@@ -65,7 +66,10 @@ class Worker(object):
             score1 = min(score1, 98)
             score2 = min(score2, 98)
 
-            current_fitness = score1 - score2
+            current_fitness = (score1 - score2)**2
+            if score1 < score2:
+                current_fitness = -current_fitness
+
             self.genome.fitness = current_fitness
 
             if score1 >= 98 or score2 >= 98:
@@ -83,8 +87,8 @@ def eval_genomes(genome, config):
 
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                     neat.DefaultSpeciesSet, neat.DefaultStagnation, 'config-memory')
-
+                     neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                     'config-memory')
 
 p = neat.Population(config)
 
@@ -92,20 +96,32 @@ p = neat.Population(config)
 p.add_reporter(neat.StdOutReporter(True))
 stats = neat.StatisticsReporter()
 p.add_reporter(stats)
-p.add_reporter(neat.Checkpointer(5, filename_prefix=save_file + "/neat-checkpoint-"))
+p.add_reporter(
+    neat.Checkpointer(5, filename_prefix=save_file + "/neat-checkpoint-"))
 
 pe = neat.ParallelEvaluator(None, eval_genomes)
 
-for i in range(100):
+for i in range(200 // 5):
     winner = p.run(pe.evaluate, 5)
 
-    visualize.draw_net(config, winner, view=False, filename=save_file + "/checkpoint-" + str(i) + "/Digraph")
-    visualize.plot_stats(stats, ylog=False, view=False, filename=save_file + "/checkpoint-" + str(i) + "/avg_fitness.svg")
-    visualize.plot_species(stats, view=False, filename=save_file + "/checkpoint-" + str(i) + "/speciation.svg")
+    visualize.draw_net(config,
+                       winner,
+                       view=False,
+                       filename=save_file + "/checkpoint-" + str(i) +
+                       "/Digraph")
+    visualize.plot_stats(stats,
+                         ylog=False,
+                         view=False,
+                         filename=save_file + "/checkpoint-" + str(i) +
+                         "/avg_fitness.svg")
+    visualize.plot_species(stats,
+                           view=False,
+                           filename=save_file + "/checkpoint-" + str(i) +
+                           "/speciation.svg")
 
-    with open(save_file + "/checkpoint-" + str(i) + '/winner.pkl', 'wb') as output:
+    with open(save_file + "/checkpoint-" + str(i) + '/winner.pkl',
+              'wb') as output:
         pickle.dump(winner, output, 1)
-
 
 time.sleep(30)
 os._exit(0)
