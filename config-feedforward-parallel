@@ -48,9 +48,9 @@ node_delete_prob        = 0.5
 # network parameters
 num_hidden              = 0
 # 210 / 8 * 160 / 8
-# num_inputs              = 520
+num_inputs              = 520
 # 210 / 16 * 160 / 16
-num_inputs              = 130
+# num_inputs              = 130
 num_outputs              = 8
 # 2p i think 
 # num_outputs             = 16
