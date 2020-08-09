@@ -1,5 +1,6 @@
 import numpy as np
 import gym
+import retro
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
@@ -9,10 +10,17 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-ENV_NAME = 'CartPole-v0'
+#ENV_NAME = 'CartPole-v0'
+ENV_NAME = 'Boxing-Atari2600'
+env = retro.make('Boxing-Atari2600', 'Start.state')
 
 # Get the environment and extract the number of actions.
-env = gym.make(ENV_NAME)
+#env = gym.make(ENV_NAME)
+
+print(env.observation_space.shape)
+print(env.action_space.n)
+exit(1)
+
 np.random.seed(123)
 env.seed(123)
 nb_actions = env.action_space.n
