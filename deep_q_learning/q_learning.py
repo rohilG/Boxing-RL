@@ -1,5 +1,6 @@
 import numpy as np
 import retro
+import gym
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten
@@ -24,6 +25,7 @@ def run_neat(mode="1p"):
         print("Starting 2P mode!")
         env = retro.make('Boxing-Atari2600', 'boxing_2p.state', players=2)
 
+    #env = gym.make('CartPole-v0')
     env.seed(123)
     nb_actions = env.action_space.n
 
