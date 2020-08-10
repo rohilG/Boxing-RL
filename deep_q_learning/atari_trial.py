@@ -14,7 +14,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, BoltzmannQPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 from rl.core import Processor
-from rl.callbacks import FileLogger, ModelIntervalCheckpoint
+from rl.callbacks import FileLogger, ModelIntervalCheckpoint, WandbLogger
 
 INPUT_SHAPE = (84, 84)
 WINDOW_LENGTH = 4
@@ -123,7 +123,8 @@ if args.mode == 'train':
     checkpoint_weights_filename = 'dqn_' + args.env_name + '_weights_{step}.h5f'
     log_filename = 'dqn_{}_log.json'.format(args.env_name)
     callbacks = [
-        ModelIntervalCheckpoint(checkpoint_weights_filename, interval=250000)
+        ModelIntervalCheckpoint(checkpoint_weights_filename, interval=250000),
+        WandbLogger()
     ]
     callbacks += [FileLogger(log_filename, interval=100)]
     dqn.fit(env,
