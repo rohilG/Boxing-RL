@@ -1,2 +1,2 @@
 # Boxing-RL
-we would like to pass
+Using Reinforcement Learning alongside OpenAI Gym to train a model on Boxing (Atari 2600)
